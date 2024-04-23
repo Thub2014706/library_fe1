@@ -10,8 +10,8 @@ class BookService {
         return response.data
     }
 
-    async getAll() {
-        const response = await this.api.get("/")
+    async getAll(number, name) {
+        const response = await this.api.get(`/?name=${name}&number=${number}`)
         return response.data
     }
 

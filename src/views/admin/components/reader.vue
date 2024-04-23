@@ -1,10 +1,10 @@
 <template>
     <div class="p-2">
         <div class="card-div p-3 shadow">
-            <h4>Tất cả sách</h4>
+            <h4>Tất cả độc giả</h4>
             <button type="button" class="btn btn-info my-3" @click="showAdd" data-toggle="modal" data-target="#myModal1">
                 <i class="fa-solid fa-plus"></i>
-                Thêm sách mới
+                Lập thẻ độc giả
             </button>
             <div class="row">
                 <div class="form-inline col d-flex">
@@ -25,29 +25,33 @@
             <table class="table table-striped text-center">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Tên sách</th>
-                        <th>Tác giả</th>
-                        <th>Năm xuất bản</th>
-                        <th>Số lượng</th>
-                        <th>Đã cho mượn</th>
-                        <th>Nhà xuất bản</th>
-                        <th></th>
+                        <!-- <th>ID</th> -->
+                        <th>Tên độc giả</th>
+                        <th>Giới tính</th>
+                        <th>Ngày sinh</th>
+                        <th>E-Mail</th>
+                        <th>Số điện thoại</th>
+                        <th>Địa chỉ</th>
+                        <th>Ngày lập thẻ</th>
+                        <th>Hạn thẻ</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(book, index) in books" :key="index" >
-                        <td>{{ book._id }}</td>
-                        <td>{{ book.name }}</td>
-                        <td>{{ book.author }}</td>
-                        <td>{{ book.year }}</td>
-                        <td>{{ book.number }}</td>
-                        <td>{{ book.borrowed }}</td>
-                        <td>{{ book.publisher }}</td>
+                    <tr v-for="(read, index) in readers" :key="index" >
+                        <!-- <td>{{ read._id }}</td> -->
+                        <td>{{ read.name }}</td>
+                        <td>{{ read.gender }}</td>
+                        <td>{{ read.birth }}</td>
+                        <td>{{ read.email }}</td>
+                        <td>{{ read.phone }}</td>
+                        <td>{{ read.address }}</td>
+                        <td>{{ read.current.toString().slice(0, 10) }}</td>
+                        <td>{{ read.duration.toString().slice(0, 10) }}</td>
+
                         <td>
-                            <i class="fa-solid fa-pen-to-square" @click="editBook(book._id)" style="color: green; cursor: pointer;"></i>
-                            <i class="fa-solid fa-trash-can" @click="deleteBook(book._id)" style="color: red; margin-left: 15px; cursor: pointer;"></i>
+                            <i class="fa-solid fa-pen-to-square" @click="editReader(read._id)" style="color: green; cursor: pointer;"></i>
+                            <i class="fa-solid fa-trash-can" @click="deleteReader(read._id)" style="color: red; margin-left: 15px; cursor: pointer;"></i>
                         </td>
                     </tr>
                 </tbody>
@@ -61,13 +65,13 @@
 
             <!-- Modal Header -->
             <div class="modal-header">
-                <h4 class="modal-title">Thêm sách mới</h4>
+                <h4 class="modal-title">Lập thẻ độc giả</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
             <!-- Modal body -->
             <div class="modal-body">
-                <AddBook v-if="test === true" @add:book="handleAdd" />
+                <AddReader v-if="test === true" @add:reader="handleAdd" />
             </div>
 
             </div>
@@ -86,7 +90,7 @@
 
             <!-- Modal body -->
             <div class="modal-body">
-                <EditBook v-if="idEdit !== ''" @edit:book="handleEdit" :id="idEdit"/>
+                <EditReader v-if="idEdit !== ''" @edit:reader="handleEdit" :id="idEdit"/>
             </div>
 
             </div>
@@ -96,19 +100,19 @@
 </template>
 
 <script>
-import BookService from "@/services/book.service"
-import AddBook from "./addBook.vue"
-import EditBook from "./editBook.vue"
+import UserService from "@/services/user.service"
+import AddReader from "./addReader.vue"
+import EditReader from "./editReader.vue"
 
 export default {
     components: {
-        BookService,
-        AddBook,
-        EditBook
+        UserService,
+        AddReader,
+        EditReader
     },
     data() {
         return {
-            books: [],
+            readers: [],
             idEdit: '',
             test: false,
             length: 1,
@@ -117,20 +121,25 @@ export default {
     },
 
     methods: {
-        async getAllBooks(number) {
+        
+        showAdd() {
+            this.test = true
+        },
+
+        async getAll(number) {
             try {
-                const data = await BookService.getAll(number, this.search)
-                this.books = data.data
+                const data = await UserService.getAll(number, this.search)
+                this.readers = data.data
                 this.length = data.totalPages
             } catch (error) {
                 console.log(error);
             }
         },
 
-        async deleteBook(id) {
+        async deleteReader(id) {
             try {
-                await BookService.deleteBook(id);
-                this.getAllBooks(1);
+                await UserService.deleteReader(id);
+                this.getAll(1);
             } catch (error) {
                 console.log(error);
             }
@@ -139,14 +148,16 @@ export default {
         async handleAdd(data) {
             const formData = new FormData();
             formData.append("name", data.name);
-            formData.append("author", data.author);
-            formData.append("year", data.year);
-            formData.append("number", data.number);
-            formData.append("publisher", data.publisher);
+            formData.append("gender", data.gender);
+            formData.append("birth", data.birth);
+            formData.append("email", data.email);
+            formData.append("phone", data.phone);
+            formData.append("address", data.address);
 
             try {
-                await BookService.create(formData);
-                this.getAllBooks(1);
+                await UserService.create(formData);
+                this.search = ''
+                this.getAll(1);
                 $('#myModal1').modal('hide');
                 this.$toast.open({
                     message: "Thêm thành công",
@@ -170,14 +181,15 @@ export default {
         async handleEdit(data) {
             const formData = new FormData();
             formData.append("name", data.name);
-            formData.append("author", data.author);
-            formData.append("year", data.year);
-            formData.append("number", data.number);
-            formData.append("publisher", data.publisher);
+            formData.append("gender", data.gender);
+            formData.append("birth", data.birth);
+            formData.append("email", data.email);
+            formData.append("phone", data.phone);
+            formData.append("address", data.address);
 
             try {
-                await BookService.update(this.idEdit, formData);
-                this.getAllBooks(1);
+                await UserService.update(this.idEdit, formData);
+                this.getAll(1);
                 $('#myModal2').modal('hide');
                 this.$toast.open({
                     message: "Cập nhật thành công",
@@ -198,33 +210,31 @@ export default {
             }
         },
 
-        showAdd() {
-            this.test = true
-        },
-
-        editBook(id) {
-            // this.editingBook = book;
-            console.log(id)
-            $('#myModal2').modal('show'); // hiển thị modal
-            this.idEdit = id;
+        async handleSearch() {
+            try {
+                const data = await UserService.getAll(1, this.search)
+                this.readers = data.data
+                this.length = data.totalPages
+                // this.readers = await UserService.getAll(1, this.search)
+            } catch (error) {
+                console.log(error);
+            }
         },
 
         handlePage(e) {
             this.getAll(e.target.value)
         },
 
-        async handleSearch() {
-            try {
-                const data = await BookService.getAll(1)
-                this.books = data.data
-                this.length = data.totalPages
-            } catch (error) {
-                console.log(error);
-            }
+        editReader(id) {
+            // this.editingBook = book;
+            console.log(id)
+            $('#myModal2').modal('show'); // hiển thị modal
+            this.idEdit = id;
         },
     },
+    
     mounted() {
-        this.getAllBooks(1);
+        this.getAll(1);
         $('#myModal2').on('hidden.bs.modal', () => {
                 this.idEdit = '';
         });

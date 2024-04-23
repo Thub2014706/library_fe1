@@ -6,6 +6,22 @@
                 <i class="fa-solid fa-plus"></i>
                 Thêm mới
             </button>
+            <div class="row">
+                <div class="form-inline col d-flex">
+                    <label class="mt-2" for="sel1">Hiện trang:</label>
+                    <select class="form-control ml-2 form-control-sm" style="width: 60px;" id="sel1" @change="handlePage($event)">
+                        <option v-for="i in length" :key="i" :value="i">{{ i }}</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <form class="form-inline mt-2 float-right" @submit.prevent="handleSearch">
+                        <input class="my-3 form-control form-control-sm" type="text" placeholder="Tìm kiếm..." v-model="search">
+                        <button class="ml-2 btn btn-info btn-sm" type="submit">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
             <table class="table table-striped text-center">
                 <thead>
                     <tr>
@@ -84,7 +100,9 @@ export default {
         return {
             publisher: [],
             idEdit: '',
-            test: false
+            test: false,
+            length: 1,
+            search: ''
         }
     },
     methods: {
@@ -92,9 +110,12 @@ export default {
             this.test = true
         },
 
-        async getAll() {
+        async getAll(number) {
             try {
-                this.publisher = await PublisherService.getAll();
+                const data = await PublisherService.getAll({name: this.search, number: number});
+                console.log('a',data)
+                this.publisher = data.data
+                this.length = data.totalPages
             } catch (error) {
                 console.log(error)
             }
@@ -103,7 +124,7 @@ export default {
         async deletePublisher(id) {
             try {
                 await PublisherService.deletePublisher(id);
-                this.getAll()
+                this.getAll(1)
             } catch (error) {
                 console.log(error)
             }
@@ -114,17 +135,18 @@ export default {
             formData.append('name', data.name);
             formData.append('address', data.address);
             console.log(formData)
-            this.$toast.open({
-                message: "Thêm thành công",
-                type: "success",
-                duration: 4000,
-                dismissible: true,
-                position: "top"
-            })
             try {
                 await PublisherService.create(formData);
-                this.getAll();
+                this.search = ''
+                this.getAll(1);
                 $('#myModal1').modal('hide');
+                this.$toast.open({
+                    message: "Thêm thành công",
+                    type: "success",
+                    duration: 4000,
+                    dismissible: true,
+                    position: "top"
+                })
             } catch (error) {
                 console.log(error)
                 this.$toast.open({
@@ -151,7 +173,7 @@ export default {
             })
             try {
                 await PublisherService.update(this.idEdit, formData);
-                this.getAll();
+                this.getAll(1);
                 $('#myModal2').modal('hide');
             } catch (error) {
                 console.log(error)
@@ -165,13 +187,27 @@ export default {
             }
         },
 
+        async handleSearch() {
+            try {
+                const data = await PublisherService.getAll({number: 1, name: this.search})
+                this.publisher = data.data
+                this.length = data.totalPages
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
         editPublisher(id) {
             $('#myModal2').modal('show'); // hiển thị modal
             this.idEdit = id;
-        }
+        },
+
+        handlePage(e) {
+            this.getAll(e.target.value)
+        },
     },
     mounted() {
-        this.getAll();
+        this.getAll(1);
         $('#myModal2').on('hidden.bs.modal', () => {
                 this.idEdit = '';
         });

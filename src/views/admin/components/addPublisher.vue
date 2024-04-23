@@ -1,37 +1,48 @@
 <template>
-    <form enctype="multipart/form-data" >
+    <Form @submit="addPublisher" :validation-schema="publisherFormSchema" >
         <div class="form-group">
             <label for="name">Tên nhà xuất bản</label>
-            <input type="text" name="name" class="form-control" v-model="formData.name" />
+            <Field type="text" name="name" class="form-control" v-model="formData.name" />
+            <ErrorMessage name="name" class="error-feedback" />
         </div>
 
         <div class="form-group">
             <label for="address">Địa chỉ</label>
-            <input type="text" name="address" class="form-control" v-model="formData.address" />
+            <Field type="text" name="address" class="form-control" v-model="formData.address" />
+            <ErrorMessage name="address" class="error-feedback" />
         </div>
 
-        <!-- <div class="form-group">
-            <label for="type">Thể loại</label>
-            <input type="text" name="number" class="form-control" />
-        </div>
-
-        <div class="form-group">
-            <label for="number">Nhà xuất bản</label>
-            <input type="text" name="number" class="form-control" />
-        </div> -->
-
-        <button class="btn btn-info" type="submit" @click.prevent="addPublisher">Thêm</button>
-    </form>
+        <button class="btn btn-info" type="submit">Thêm</button>
+    </Form>
     
 </template>
 
 <script>
+import * as yup from "yup";
+import { Form, Field, ErrorMessage } from "vee-validate";
+
 export default {
+    components: {
+        Form,
+        Field,
+        ErrorMessage,
+    },
     emits: ["add:publisher"],
     data() {
+        const publisherFormSchema = yup.object().shape({
+            name: yup
+                .string()
+                .required("Tên nhà xuất bản phải có giá trị.")
+                .min(5, "Tên nhà xuất bản phải ít nhất 5 ký tự.")
+                .max(50, "Tên nhà xuất bản có nhiều nhất 50 ký tự."),
+            address: yup
+                .string()
+                .required("Hãy nhập địa chỉ.")
+                .max(100, "Địa chỉ tối đa 100 ký tự."),
+        })
         return {
             formData: {},
-            // result: {}
+            publisherFormSchema
         }
     },
     methods: {
@@ -41,3 +52,7 @@ export default {
     }
 }
 </script>
+
+<style>
+@import "@/assets/form.css";
+</style>

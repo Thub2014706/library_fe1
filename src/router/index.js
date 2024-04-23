@@ -16,6 +16,16 @@ const routes = [
                 path: "book",
                 name: "admin.book",
                 component: () => import("@/views/admin/components/books.vue")
+            },
+            {
+                path: "reader",
+                name: "admin.reader",
+                component: () => import("@/views/admin/components/reader.vue")
+            },
+            {
+                path: "borrow",
+                name: "admin.borrow",
+                component: () => import("@/views/admin/components/borrow.vue")
             }
         ]
     },

@@ -1,60 +1,83 @@
 <template>
-    <form action="">
+    <Form @submit="editBook" :validation-schema="bookFormSchema">
         <div class="form-group">
             <label for="name">Tên sách</label>
-            <input type="text" name="name" class="form-control" v-model="formData.name" />
+            <Field type="text" name="name" class="form-control" v-model="formData.name" />
+            <ErrorMessage name="name" class="error-feedback" />
         </div>
 
         <div class="form-group">
             <label for="author">Tác giả</label>
-            <input type="text" name="author" class="form-control" v-model="formData.author" />
+            <Field type="text" name="author" class="form-control" v-model="formData.author" />
+            <ErrorMessage name="author" class="error-feedback" />
         </div>
 
         <div class="form-group">
             <label for="year">Năm xuất bản</label>
-            <input type="text" name="year" class="form-control" v-model="formData.year" />
+            <Field type="text" name="year" class="form-control" v-model="formData.year" />
+            <ErrorMessage name="year" class="error-feedback" />
         </div>
 
         <div class="form-group">
             <label for="number">Số lượng</label>
-            <input type="text" name="number" class="form-control" v-model="formData.number" />
+            <Field type="number" name="number" class="form-control" v-model="formData.number" />
+            <ErrorMessage name="number" class="error-feedback" />
         </div>
-
-        <!-- <div class="form-group">
-            <label for="type">Thể loại</label>
-            <input type="text" name="number" class="form-control" />
-        </div> -->
-
-        <!-- <div class="form-group">
-            <label for="number">Nhà xuất bản</label>
-            <input type="text" name="number" class="form-control" />
-        </div> -->
 
         <div class="form-group">
             <label for="publisher">Nhà xuất bản</label>
             <select name="publisher" class="custom-select mb-3" v-model="formData.publisher">
-                <option value="" selected>---Chọn Nhà xuất bản---</option>
+                <!-- <option value="" selected>---Chọn Nhà xuất bản---</option> -->
                 <option v-for="pub in publisher" :key="pub._id" :value="pub.name" >{{ pub.name }}</option>
             </select>
         </div>
 
-        <button class="btn btn-info" type="submit" @click.prevent="editBook">Cập nhật</button>
-    </form>
+        <button class="btn btn-info" type="submit">Cập nhật</button>
+    </Form>
     
 </template>
 
 <script>
 import PublisherService from "@/services/publisher.service"
 import BookService from "@/services/book.service"
+import * as yup from "yup";
+import { Form, Field, ErrorMessage } from "vee-validate";
 
 export default {
+    components: {
+        Form,
+        Field,
+        ErrorMessage,
+    },
     emits: ["edit:book"],
     props: {
         id: { type: String, required: true },
     },
     data() {
+        const bookFormSchema = yup.object().shape({
+            name: yup
+                .string()
+                .required("Tên sách phải có giá trị.")
+                .min(2, "Tên sách phải ít nhất 2 ký tự.")
+                .max(50, "Tên sách có nhiều nhất 50 ký tự."),
+            author: yup
+                .string()
+                .required("Tên tác giả phải có giá trị.")
+                .min(2, "Tên tác giả phải ít nhất 2 ký tự.")
+                .max(50, "Tên tác giả có nhiều nhất 50 ký tự."),
+            year: yup
+                .string()
+                .matches(/^[0-9]+$/, 'Chỉ được nhập số.')
+                .required("Hãy nhập năm xuất bản.")
+                .max(4, "Năm tối đa 4 ký tự."),
+            number: yup
+                .string()
+                .matches(/^[0-9]+$/, 'Chỉ được nhập số.')
+                .required("Hãy nhập số lượng.")
+        })
         return {
             formData: {},
+            bookFormSchema,
             publisher: []
             // result: {}
         }
@@ -62,7 +85,7 @@ export default {
     methods: {
         async getAllPublisher() {
             try {
-                this.publisher = await PublisherService.getAll();
+                this.publisher = await PublisherService.getAll({name: ''});
             } catch (error) {
                 console.log(error)
             }
@@ -92,3 +115,7 @@ export default {
     },
 }
 </script>
+
+<style>
+@import "@/assets/form.css";
+</style>
