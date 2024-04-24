@@ -28,7 +28,7 @@
             <label for="publisher">Nhà xuất bản</label>
             <select name="publisher" class="custom-select mb-3" v-model="formData.publisher">
                 <!-- <option value="" selected>---Chọn Nhà xuất bản---</option> -->
-                <option v-for="pub in publisher" :key="pub._id" :value="pub.name" >{{ pub.name }}</option>
+                <option v-for="pub in publisher" :key="pub._id" :value="pub._id" >{{ pub.name }}</option>
             </select>
         </div>
 

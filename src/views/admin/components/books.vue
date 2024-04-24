@@ -44,7 +44,10 @@
                         <td>{{ book.year }}</td>
                         <td>{{ book.number }}</td>
                         <td>{{ book.borrowed }}</td>
-                        <td>{{ book.publisher }}</td>
+                        <td>
+                            <p v-if="book.publisher_details.length !== 0">{{ book.publisher_details[0].name }}</p>
+                            <p v-if="book.publisher_details.length === 0">Null</p>
+                        </td>
                         <td>
                             <i class="fa-solid fa-pen-to-square" @click="editBook(book._id)" style="color: green; cursor: pointer;"></i>
                             <i class="fa-solid fa-trash-can" @click="deleteBook(book._id)" style="color: red; margin-left: 15px; cursor: pointer;"></i>
@@ -118,6 +121,7 @@ export default {
 
     methods: {
         async getAllBooks(number) {
+            // console.log(this.books)
             try {
                 const data = await BookService.getAll(number, this.search)
                 this.books = data.data

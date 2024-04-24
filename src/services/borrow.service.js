@@ -10,17 +10,10 @@ class BorrowService {
         return response.data
     }
 
-    async getAll(params) {
-        let url = '/';
-    
-        if (params.number) {
-            url += `?name=${params.name}&number=${params.number}`;
-        } else if (params.name && !params.number) {
-            url += `?name=${params.name}`;
-        }
-    
-        const response = await this.api.get(url);
-        return response.data;
+    async getAll(number, name) {
+        const response = await this.api.get(`/find-borrowing?name=${name}&number=${number}`)
+        console.log(response.data)
+        return response.data
     }
 
     // async getDetail(id) {
