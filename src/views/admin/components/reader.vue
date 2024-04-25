@@ -2,10 +2,10 @@
     <div class="p-2">
         <div class="card-div p-3 shadow">
             <h4>Tất cả độc giả</h4>
-            <button type="button" class="btn btn-info my-3" @click="showAdd" data-toggle="modal" data-target="#myModal1">
+            <!-- <button type="button" class="btn btn-info my-3" @click="showAdd" data-toggle="modal" data-target="#myModal1">
                 <i class="fa-solid fa-plus"></i>
                 Lập thẻ độc giả
-            </button>
+            </button> -->
             <div class="row">
                 <div class="form-inline col d-flex">
                     <label class="mt-2" for="sel1">Hiện trang:</label>
@@ -29,71 +29,26 @@
                         <th>Tên độc giả</th>
                         <th>Giới tính</th>
                         <th>Ngày sinh</th>
-                        <th>E-Mail</th>
                         <th>Số điện thoại</th>
                         <th>Địa chỉ</th>
-                        <th>Ngày lập thẻ</th>
-                        <th>Hạn thẻ</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(read, index) in readers" :key="index" >
                         <!-- <td>{{ read._id }}</td> -->
-                        <td>{{ read.name }}</td>
-                        <td>{{ read.gender }}</td>
-                        <td>{{ read.birth }}</td>
-                        <td>{{ read.email }}</td>
-                        <td>{{ read.phone }}</td>
-                        <td>{{ read.address }}</td>
-                        <td>{{ read.current.toString().slice(0, 10) }}</td>
-                        <td>{{ read.duration.toString().slice(0, 10) }}</td>
+                        <td>{{ read.ten }}</td>
+                        <td>{{ read.gioitinh }}</td>
+                        <td>{{ read.ngaysinh }}</td>
+                        <td>{{ read.dienthoai }}</td>
+                        <td>{{ read.diachi }}</td>
 
                         <td>
-                            <i class="fa-solid fa-pen-to-square" @click="editReader(read._id)" style="color: green; cursor: pointer;"></i>
                             <i class="fa-solid fa-trash-can" @click="deleteReader(read._id)" style="color: red; margin-left: 15px; cursor: pointer;"></i>
                         </td>
                     </tr>
                 </tbody>
             </table>
-        </div>
-    </div>
-    
-    <div class="modal fade" id="myModal1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title">Lập thẻ độc giả</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-
-            <!-- Modal body -->
-            <div class="modal-body">
-                <AddReader v-if="test === true" @add:reader="handleAdd" />
-            </div>
-
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="myModal2">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title">Cập nhật sách</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-
-            <!-- Modal body -->
-            <div class="modal-body">
-                <EditReader v-if="idEdit !== ''" @edit:reader="handleEdit" :id="idEdit"/>
-            </div>
-
-            </div>
         </div>
     </div>
 

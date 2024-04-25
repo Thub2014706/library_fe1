@@ -11,7 +11,7 @@ class BookService {
     }
 
     async getAll(number, name) {
-        const response = await this.api.get(`/?name=${name}&number=${number}`)
+        const response = await this.api.get(`/?name=${name}&number=${number}&show=10`)
         console.log(response.data)
         return response.data
     }

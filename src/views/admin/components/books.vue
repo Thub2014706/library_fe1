@@ -25,7 +25,7 @@
             <table class="table table-striped text-center">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Hình ảnh</th>
                         <th>Tên sách</th>
                         <th>Tác giả</th>
                         <th>Năm xuất bản</th>
@@ -38,17 +38,19 @@
                 </thead>
                 <tbody>
                     <tr v-for="(book, index) in books" :key="index" >
-                        <td>{{ book._id }}</td>
-                        <td>{{ book.name }}</td>
-                        <td>{{ book.author }}</td>
-                        <td>{{ book.year }}</td>
-                        <td>{{ book.number }}</td>
-                        <td>{{ book.borrowed }}</td>
-                        <td>
+                        <td class="align-middle">
+                            <img :src="book.image" alt="" style="height: 100px;">
+                        </td>
+                        <td class="align-middle">{{ book.name }}</td>
+                        <td class="align-middle">{{ book.author }}</td>
+                        <td class="align-middle">{{ book.year }}</td>
+                        <td class="align-middle">{{ book.number }}</td>
+                        <td class="align-middle">{{ book.borrowed }}</td>
+                        <td class="align-middle">
                             <p v-if="book.publisher_details.length !== 0">{{ book.publisher_details[0].name }}</p>
                             <p v-if="book.publisher_details.length === 0">Null</p>
                         </td>
-                        <td>
+                        <td class="align-middle">
                             <i class="fa-solid fa-pen-to-square" @click="editBook(book._id)" style="color: green; cursor: pointer;"></i>
                             <i class="fa-solid fa-trash-can" @click="deleteBook(book._id)" style="color: red; margin-left: 15px; cursor: pointer;"></i>
                         </td>
@@ -143,6 +145,7 @@ export default {
         async handleAdd(data) {
             const formData = new FormData();
             formData.append("name", data.name);
+            formData.append("image", data.image);
             formData.append("author", data.author);
             formData.append("year", data.year);
             formData.append("number", data.number);

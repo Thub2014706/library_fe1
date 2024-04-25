@@ -7,6 +7,12 @@
         </div>
 
         <div class="form-group">
+            <label for="image">Link hình ảnh</label>
+            <Field type="link" name="image" class="form-control" v-model="formData.image" />
+            <ErrorMessage name="image" class="error-feedback" />
+        </div>
+
+        <div class="form-group">
             <label for="author">Tác giả</label>
             <Field type="text" name="author" class="form-control" v-model="formData.author" />
             <ErrorMessage name="author" class="error-feedback" />
@@ -60,6 +66,10 @@ export default {
                 .required("Tên sách phải có giá trị.")
                 .min(2, "Tên sách phải ít nhất 2 ký tự.")
                 .max(50, "Tên sách có nhiều nhất 50 ký tự."),
+            image: yup
+                .string()
+                .required("Link hình ảnh phải có giá trị.")
+                .min(2, "Link hình ảnh phải ít nhất 2 ký tự."),
             author: yup
                 .string()
                 .required("Tên tác giả phải có giá trị.")
