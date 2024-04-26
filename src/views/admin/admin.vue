@@ -1,7 +1,7 @@
 <template>
     <div class="row">
         <div class="col-md-2 min-vh-100 colum1-color">
-            <h2>Cột 1</h2>
+            <h2>Gia Thư</h2>
             <Navbar />
         </div>
         <div class="col-md-10">

@@ -24,6 +24,8 @@
                 <th>Ngày mượn</th>
                 <th>Ngày hẹn trả</th>
                 <th>Ngày duyệt mượn</th>
+                <th>Ngày trả</th>
+                <th>Xác nhận</th>
             </tr>
         </thead>
         <tbody>
@@ -34,6 +36,10 @@
                 <td>{{ borrow.borrowDate.toString().slice(0, 10) }}</td>
                 <td>{{ borrow.durationDate.toString().slice(0, 10) }}</td>
                 <td>{{ borrow.xacnhanmuon.toString().slice(0, 10) }}</td>
+                <td>{{ borrow.ngaytra.toString().slice(0, 10) }}</td>
+                <td>
+                    <i class="fa-solid fa-circle-check" @click="handleReturn(borrow._id)" style="color: green;"></i>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -55,7 +61,7 @@ export default {
     methods: {
         async getAll(number) {
             try {
-                const data = await BorrowService.getAll(number, this.search, 'xacnhanmuon', 'ngaytra')
+                const data = await BorrowService.getAll(number, this.search, 'ngaytra', 'xacnhantra')
                 this.allBorrow = data.data
                 this.length = data.totalPages
             } catch (error) {
@@ -79,7 +85,16 @@ export default {
 
         async numberAll() {
             this.length = await numberAll()
-        }
+        },
+
+        async handleReturn(id) {
+            try {
+                await BorrowService.update(id)
+                this.getAll(1)
+            } catch (error) {
+                console.log(error);
+            }
+        },
     },
     mounted() {
         this.getAll(1)

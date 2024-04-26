@@ -24,6 +24,8 @@
                 <th>Ngày mượn</th>
                 <th>Ngày hẹn trả</th>
                 <th>Ngày duyệt mượn</th>
+                <th>Ngày trả</th>
+                <th>Ngày duyệt trả</th>
             </tr>
         </thead>
         <tbody>
@@ -34,6 +36,8 @@
                 <td>{{ borrow.borrowDate.toString().slice(0, 10) }}</td>
                 <td>{{ borrow.durationDate.toString().slice(0, 10) }}</td>
                 <td>{{ borrow.xacnhanmuon.toString().slice(0, 10) }}</td>
+                <td>{{ borrow.ngaytra.toString().slice(0, 10) }}</td>
+                <td>{{ borrow.xacnhantra.toString().slice(0, 10) }}</td>
             </tr>
         </tbody>
     </table>
@@ -55,8 +59,9 @@ export default {
     methods: {
         async getAll(number) {
             try {
-                const data = await BorrowService.getAll(number, this.search, 'xacnhanmuon', 'ngaytra')
+                const data = await BorrowService.getAll(number, this.search, 'xacnhantra', '')
                 this.allBorrow = data.data
+                console.log(data)
                 this.length = data.totalPages
             } catch (error) {
                 console.log(error);
@@ -76,14 +81,9 @@ export default {
         handlePage(e) {
             this.getAll(e.target.value)
         },
-
-        async numberAll() {
-            this.length = await numberAll()
-        }
     },
     mounted() {
         this.getAll(1)
-        this.numberAll()
     }
 }
 </script>

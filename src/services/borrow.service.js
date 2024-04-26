@@ -10,8 +10,8 @@ class BorrowService {
         return response.data
     }
 
-    async getAll(number, name) {
-        const response = await this.api.get(`/find-borrowing?name=${name}&number=${number}`)
+    async getAll(number, name, column1, column2) {
+        const response = await this.api.get(`/?name=${name}&number=${number}&column1=${column1}&column2=${column2}`)
         console.log(response.data)
         return response.data
     }
@@ -21,8 +21,9 @@ class BorrowService {
     //     return response.data
     // }
 
-    async returnTheBook(id) {
-        const response = await this.api.put(`/${id}`, {})
+    async update(id) {
+        console.log('ggg')
+        const response = await this.api.put(`/${id}`)
         return response.data
     }
 

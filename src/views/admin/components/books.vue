@@ -176,6 +176,7 @@ export default {
         
         async handleEdit(data) {
             const formData = new FormData();
+            formData.append("image", data.image);
             formData.append("name", data.name);
             formData.append("author", data.author);
             formData.append("year", data.year);
@@ -217,12 +218,12 @@ export default {
         },
 
         handlePage(e) {
-            this.getAll(e.target.value)
+            this.getAllBooks(e.target.value)
         },
 
         async handleSearch() {
             try {
-                const data = await BookService.getAll(1)
+                const data = await BookService.getAll(1, this.search)
                 this.books = data.data
                 this.length = data.totalPages
             } catch (error) {
